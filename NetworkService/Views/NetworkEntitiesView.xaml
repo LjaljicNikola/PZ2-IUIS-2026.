@@ -1,0 +1,390 @@
+<UserControl x:Class="NetworkService.Views.NetworkEntitiesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             mc:Ignorable="d"
+             d:DesignHeight="700" d:DesignWidth="1100">
+
+    <UserControl.Resources>
+        <!-- Paleta boja: tamna, zelena i žuta za DER/energetsku temu -->
+        <SolidColorBrush x:Key="PrimaryBg"     Color="#FF1A1A2E"/>
+        <SolidColorBrush x:Key="SecondaryBg"   Color="#FF16213E"/>
+        <SolidColorBrush x:Key="CardBg"        Color="#FF0F3460"/>
+        <SolidColorBrush x:Key="AccentGreen"   Color="#FF22C55E"/>
+        <SolidColorBrush x:Key="AccentYellow"  Color="#FFEAB308"/>
+        <SolidColorBrush x:Key="AccentRed"     Color="#FFEF4444"/>
+        <SolidColorBrush x:Key="TextPrimary"   Color="#FFE2E8F0"/>
+        <SolidColorBrush x:Key="TextMuted"     Color="#FF94A3B8"/>
+        <SolidColorBrush x:Key="BorderColor"   Color="#FF334155"/>
+
+        <LinearGradientBrush x:Key="HeaderGrad" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#FF16A34A" Offset="0"/>
+            <GradientStop Color="#FF15803D" Offset="1"/>
+        </LinearGradientBrush>
+
+        <BooleanToVisibilityConverter x:Key="BoolVis"/>
+
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground"  Value="{StaticResource TextMuted}"/>
+            <Setter Property="FontSize"    Value="12"/>
+            <Setter Property="Margin"      Value="0,0,0,4"/>
+        </Style>
+
+        <Style x:Key="ErrorStyle" TargetType="TextBlock">
+            <Setter Property="Foreground"  Value="{StaticResource AccentRed}"/>
+            <Setter Property="FontSize"    Value="11"/>
+            <Setter Property="Margin"      Value="0,2,0,8"/>
+        </Style>
+
+        <Style x:Key="InputStyle" TargetType="TextBox">
+            <Setter Property="Background"   Value="{StaticResource SecondaryBg}"/>
+            <Setter Property="Foreground"   Value="{StaticResource TextPrimary}"/>
+            <Setter Property="BorderBrush"  Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding"      Value="8,6"/>
+            <Setter Property="FontSize"     Value="13"/>
+            <Setter Property="CaretBrush"   Value="{StaticResource AccentGreen}"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentGreen}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ComboStyle" TargetType="ComboBox">
+            <Setter Property="Background"   Value="{StaticResource SecondaryBg}"/>
+            <Setter Property="Foreground"   Value="{StaticResource TextPrimary}"/>
+            <Setter Property="BorderBrush"  Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding"      Value="8,6"/>
+            <Setter Property="FontSize"     Value="13"/>
+        </Style>
+
+        <Style x:Key="RadioStyle" TargetType="RadioButton">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="Margin"     Value="0,0,15,0"/>
+            <Setter Property="FontSize"   Value="13"/>
+            <Setter Property="Cursor"     Value="Hand"/>
+        </Style>
+
+        <Style x:Key="CheckStyle" TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="Margin"     Value="0,4,0,4"/>
+            <Setter Property="FontSize"   Value="12"/>
+            <Setter Property="Cursor"     Value="Hand"/>
+        </Style>
+
+        <Style x:Key="PrimaryBtn" TargetType="Button">
+            <Setter Property="Background"   Value="{StaticResource AccentGreen}"/>
+            <Setter Property="Foreground"   Value="#FF0F172A"/>
+            <Setter Property="FontWeight"   Value="SemiBold"/>
+            <Setter Property="FontSize"     Value="13"/>
+            <Setter Property="Padding"      Value="12,7"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor"       Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4"
+                                Opacity="{TemplateBinding IsEnabled, Converter={x:Static BooleanToVisibilityConverter}}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF16A34A"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{StaticResource BorderColor}"/>
+                    <Setter Property="Foreground" Value="{StaticResource TextMuted}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DangerBtn" TargetType="Button" BasedOn="{StaticResource PrimaryBtn}">
+            <Setter Property="Background" Value="{StaticResource AccentRed}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFDC2626"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{StaticResource BorderColor}"/>
+                    <Setter Property="Foreground" Value="{StaticResource TextMuted}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SecondaryBtn" TargetType="Button" BasedOn="{StaticResource PrimaryBtn}">
+            <Setter Property="Background" Value="{StaticResource CardBg}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF1E4080"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{StaticResource BorderColor}"/>
+                    <Setter Property="Foreground" Value="{StaticResource TextMuted}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="GridStyle" TargetType="DataGrid">
+            <Setter Property="Background"          Value="Transparent"/>
+            <Setter Property="Foreground"          Value="{StaticResource TextPrimary}"/>
+            <Setter Property="BorderBrush"         Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness"     Value="1"/>
+            <Setter Property="RowBackground"       Value="{StaticResource SecondaryBg}"/>
+            <Setter Property="AlternatingRowBackground" Value="{StaticResource CardBg}"/>
+            <Setter Property="HeadersVisibility"   Value="Column"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows"      Value="False"/>
+            <Setter Property="CanUserDeleteRows"   Value="False"/>
+            <Setter Property="IsReadOnly"          Value="True"/>
+            <Setter Property="SelectionMode"       Value="Single"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="RowHeight"           Value="65"/>
+            <Setter Property="ColumnHeaderHeight"  Value="38"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        </Style>
+
+        <Style x:Key="GridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background"   Value="{StaticResource HeaderGrad}"/>
+            <Setter Property="Foreground"   Value="White"/>
+            <Setter Property="FontWeight"   Value="Bold"/>
+            <Setter Property="Padding"      Value="10,8"/>
+        </Style>
+
+        <Style x:Key="GridCellStyle" TargetType="DataGridCell">
+            <Setter Property="Foreground"       Value="{StaticResource TextPrimary}"/>
+            <Setter Property="BorderThickness"  Value="0"/>
+            <Setter Property="Padding"          Value="10"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AccentGreen}"/>
+                    <Setter Property="Foreground" Value="#FF0F172A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="{StaticResource PrimaryBg}">
+        <Grid.ColumnDefinitions>
+            <!-- Leva kolona: forma + filter + history -->
+            <ColumnDefinition Width="320"/>
+            <!-- Srednja kolona: tabela -->
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ═══════════════════ LEVI PANEL ═══════════════════ -->
+        <Border Grid.Column="0" Background="{StaticResource SecondaryBg}" Padding="12">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+
+                    <!-- Header -->
+                    <Border Background="{StaticResource HeaderGrad}" CornerRadius="6" Padding="10" Margin="0,0,0,12">
+                        <TextBlock Text="⚡ DER Management" FontSize="16" FontWeight="Bold"
+                                   Foreground="White" TextAlignment="Center"/>
+                    </Border>
+
+                    <!-- ── FORMA ZA DODAVANJE ── -->
+                    <Border Background="{StaticResource CardBg}" CornerRadius="6" Margin="0,0,0,12" Padding="12">
+                        <StackPanel>
+                            <TextBlock Text="Add New Resource" FontSize="14" FontWeight="Bold"
+                                       Foreground="{StaticResource AccentGreen}" Margin="0,0,0,10"/>
+
+                            <TextBlock Text="Resource Name" Style="{StaticResource LabelStyle}"/>
+                            <TextBox Text="{Binding CurrentResource.Name, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource InputStyle}" Margin="0,0,0,2"
+                                     ToolTip="Enter a unique name for this DER resource"/>
+                            <TextBlock Text="{Binding CurrentResource.ValidationErrors[Name]}"
+                                       Style="{StaticResource ErrorStyle}"/>
+
+                            <TextBlock Text="Resource Type" Style="{StaticResource LabelStyle}"/>
+                            <ComboBox ItemsSource="{Binding ResourceTypes}"
+                                      SelectedItem="{Binding CurrentResource.TypeName}"
+                                      Style="{StaticResource ComboStyle}" Margin="0,0,0,12"
+                                      ToolTip="Select Solar Panel or Windgenerator"/>
+
+                            <Button Content="➕ Add Resource" Command="{Binding AddCommand}"
+                                    Style="{StaticResource PrimaryBtn}" HorizontalAlignment="Stretch"
+                                    ToolTip="Add this DER resource to the monitoring system (Ctrl+A to expand/collapse)"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- ── P1 PRETRAGA ── -->
+                    <Border Background="{StaticResource CardBg}" CornerRadius="6" Margin="0,0,0,12" Padding="12">
+                        <StackPanel>
+                            <TextBlock Text="Search (P1)" FontSize="14" FontWeight="Bold"
+                                       Foreground="{StaticResource AccentYellow}" Margin="0,0,0,10"/>
+
+                            <TextBlock Text="Search by:" Style="{StaticResource LabelStyle}"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <RadioButton Content="Name" GroupName="searchGroup"
+                                             IsChecked="{Binding IsNameFilterSelected}"
+                                             Style="{StaticResource RadioStyle}"
+                                             ToolTip="Filter table by resource name"/>
+                                <RadioButton Content="Type" GroupName="searchGroup"
+                                             IsChecked="{Binding IsTypeFilterSelected}"
+                                             Style="{StaticResource RadioStyle}"
+                                             ToolTip="Filter table by resource type"/>
+                            </StackPanel>
+
+                            <TextBox Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource InputStyle}" Margin="0,0,0,10"
+                                     ToolTip="Type to filter the table"/>
+
+                            <!-- CG4 dodatni filter po opsegu -->
+                            <TextBlock Text="Value Range Filter:" Style="{StaticResource LabelStyle}"
+                                       Margin="0,4,0,4"/>
+                            <CheckBox Content="Show only OUT-OF-RANGE (invalid)" Style="{StaticResource CheckStyle}"
+                                      IsChecked="{Binding ShowOnlyOutOfRange}"
+                                      ToolTip="Show only resources whose last measurement was outside 1–5 MW"/>
+                            <CheckBox Content="Show only IN-RANGE (valid)" Style="{StaticResource CheckStyle}"
+                                      IsChecked="{Binding ShowOnlyInRange}"
+                                      ToolTip="Show only resources whose last measurement was within 1–5 MW"/>
+
+                            <Button Content="✖ Clear All Filters" Command="{Binding ClearFilterCommand}"
+                                    Style="{StaticResource SecondaryBtn}" HorizontalAlignment="Stretch"
+                                    Margin="0,8,0,0"
+                                    ToolTip="Reset all filters and show all resources"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- ── BRISANJE + UNDO ── -->
+                    <Border Background="{StaticResource CardBg}" CornerRadius="6" Margin="0,0,0,12" Padding="12">
+                        <StackPanel>
+                            <TextBlock Text="Actions" FontSize="14" FontWeight="Bold"
+                                       Foreground="{StaticResource TextPrimary}" Margin="0,0,0,10"/>
+                            <Button Content="🗑 Delete Selected" Command="{Binding DeleteCommand}"
+                                    Style="{StaticResource DangerBtn}" HorizontalAlignment="Stretch"
+                                    Margin="0,0,0,8"
+                                    ToolTip="Delete the selected resource (confirmation required)"/>
+                            <Button Content="↩ Undo Last" Command="{Binding UndoCommand}"
+                                    Style="{StaticResource SecondaryBtn}" HorizontalAlignment="Stretch"
+                                    Margin="0,0,0,8"
+                                    ToolTip="Undo the last action (Add or Delete)"/>
+                            <Button Content="↩↩ Undo All" Command="{Binding UndoAllCommand}"
+                                    Style="{StaticResource SecondaryBtn}" HorizontalAlignment="Stretch"
+                                    ToolTip="Undo ALL performed actions at once (CG4)"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- ── CG4 HISTORY PALETA ── -->
+                    <Border Background="{StaticResource CardBg}" CornerRadius="6" Padding="12">
+                        <StackPanel>
+                            <TextBlock Text="📋 Action History" FontSize="14" FontWeight="Bold"
+                                       Foreground="{StaticResource TextPrimary}" Margin="0,0,0,8"/>
+                            <ListBox ItemsSource="{Binding ActionHistory}"
+                                     Background="Transparent" BorderThickness="0"
+                                     Foreground="{StaticResource TextMuted}"
+                                     FontSize="11" MaxHeight="180"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                     ToolTip="Complete history of all performed actions">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- ═══════════════════ DESNI PANEL: TABELA ═══════════════════ -->
+        <Border Grid.Column="1" Background="{StaticResource PrimaryBg}" Padding="12">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Background="{StaticResource HeaderGrad}" CornerRadius="6"
+                        Padding="10" Margin="0,0,0,10">
+                    <TextBlock Text="DER Resource List — valid range: 1 – 5 MW"
+                               Foreground="White" FontSize="15" FontWeight="Bold"/>
+                </Border>
+
+                <DataGrid Grid.Row="1" Style="{StaticResource GridStyle}"
+                          ItemsSource="{Binding FilteredView}"
+                          SelectedItem="{Binding SelectedResource}">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader"
+                               BasedOn="{StaticResource GridHeaderStyle}"/>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.CellStyle>
+                        <Style TargetType="DataGridCell"
+                               BasedOn="{StaticResource GridCellStyle}"/>
+                    </DataGrid.CellStyle>
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID"
+                                            Binding="{Binding Id}" Width="45"/>
+                        <DataGridTextColumn Header="Name"
+                                            Binding="{Binding Name}" Width="2*"/>
+                        <DataGridTextColumn Header="Type"
+                                            Binding="{Binding ResourceType.Name}" Width="1.5*"/>
+                        <!-- Vrednost sa bojom (DataGridTemplateColumn) -->
+                        <DataGridTemplateColumn Header="Value (MW)" Width="110">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock FontWeight="Bold" FontSize="13"
+                                               Text="{Binding CurrentValue, StringFormat={}{0:F2} MW}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#FF22C55E"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsValueValid}" Value="False">
+                                                        <Setter Property="Foreground" Value="#FFEF4444"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <!-- Ikonica tipa -->
+                        <DataGridTemplateColumn Header="Icon" Width="70">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding ResourceType.ImagePath}"
+                                           Width="55" Height="55"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <!-- Status -->
+                        <DataGridTemplateColumn Header="Status" Width="90">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock FontWeight="SemiBold" FontSize="11" TextAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="✔ OK"/>
+                                                <Setter Property="Foreground" Value="#FF22C55E"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsValueValid}" Value="False">
+                                                        <Setter Property="Text" Value="⚠ ALARM"/>
+                                                        <Setter Property="Foreground" Value="#FFEF4444"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

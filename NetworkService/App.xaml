@@ -1,0 +1,18 @@
+<Application x:Class="NetworkService.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:NetworkService"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <!-- Globalna paleta boja za DER/energetsku temu (tamna + zelena) -->
+        <SolidColorBrush x:Key="AppPrimaryBg"    Color="#FF1A1A2E"/>
+        <SolidColorBrush x:Key="AppSecondaryBg"  Color="#FF16213E"/>
+        <SolidColorBrush x:Key="AppCardBg"       Color="#FF0F3460"/>
+        <SolidColorBrush x:Key="AppAccentGreen"  Color="#FF22C55E"/>
+        <SolidColorBrush x:Key="AppAccentYellow" Color="#FFEAB308"/>
+        <SolidColorBrush x:Key="AppAccentRed"    Color="#FFEF4444"/>
+        <SolidColorBrush x:Key="AppTextPrimary"  Color="#FFE2E8F0"/>
+        <SolidColorBrush x:Key="AppTextMuted"    Color="#FF94A3B8"/>
+        <SolidColorBrush x:Key="AppBorder"       Color="#FF334155"/>
+    </Application.Resources>
+</Application>
