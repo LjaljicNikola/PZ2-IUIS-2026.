@@ -4,7 +4,7 @@ using Notification.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
+
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -213,8 +213,10 @@ namespace NetworkService.ViewModel
             // Y-osa linija
             Line yLine = new Line
             {
-                X1 = yAxisWidth, Y1 = 5,
-                X2 = yAxisWidth, Y2 = chartHeight + 5,
+                X1 = yAxisWidth,
+                Y1 = 5,
+                X2 = yAxisWidth,
+                Y2 = chartHeight + 5,
                 Stroke = new SolidColorBrush(Color.FromRgb(120, 120, 120)),
                 StrokeThickness = 1
             };
@@ -223,8 +225,10 @@ namespace NetworkService.ViewModel
             // X-osa linija
             Line xLine = new Line
             {
-                X1 = yAxisWidth, Y1 = chartHeight + 5,
-                X2 = GraphCanvas.ActualWidth - 5, Y2 = chartHeight + 5,
+                X1 = yAxisWidth,
+                Y1 = chartHeight + 5,
+                X2 = GraphCanvas.ActualWidth - 5,
+                Y2 = chartHeight + 5,
                 Stroke = new SolidColorBrush(Color.FromRgb(120, 120, 120)),
                 StrokeThickness = 1
             };
@@ -238,8 +242,10 @@ namespace NetworkService.ViewModel
                 // Horizontalna linija mreže
                 Line gridLine = new Line
                 {
-                    X1 = yAxisWidth, Y1 = y,
-                    X2 = GraphCanvas.ActualWidth - 5, Y2 = y,
+                    X1 = yAxisWidth,
+                    Y1 = y,
+                    X2 = GraphCanvas.ActualWidth - 5,
+                    Y2 = y,
                     Stroke = new SolidColorBrush(Color.FromArgb(60, 180, 180, 180)),
                     StrokeThickness = 0.5
                 };
@@ -263,8 +269,10 @@ namespace NetworkService.ViewModel
                 double y = chartHeight + 5 - (limit / 6.0) * chartHeight;
                 Line limitLine = new Line
                 {
-                    X1 = yAxisWidth, Y1 = y,
-                    X2 = GraphCanvas.ActualWidth - 5, Y2 = y,
+                    X1 = yAxisWidth,
+                    Y1 = y,
+                    X2 = GraphCanvas.ActualWidth - 5,
+                    Y2 = y,
                     Stroke = new SolidColorBrush(Color.FromRgb(250, 204, 21)),
                     StrokeThickness = 1,
                     StrokeDashArray = new DoubleCollection { 5, 3 }
@@ -366,8 +374,12 @@ namespace NetworkService.ViewModel
                 // Legenda ispod
                 double legendY = barTop + barHeight + 5;
 
-                Rectangle solarLegend = new Rectangle { Width = 12, Height = 12,
-                    Fill = new SolidColorBrush(Color.FromRgb(234, 179, 8)) };
+                Rectangle solarLegend = new Rectangle
+                {
+                    Width = 12,
+                    Height = 12,
+                    Fill = new SolidColorBrush(Color.FromRgb(234, 179, 8))
+                };
                 Canvas.SetLeft(solarLegend, 5); Canvas.SetTop(solarLegend, legendY);
                 TypeGraphCanvas.Children.Add(solarLegend);
 
@@ -380,8 +392,12 @@ namespace NetworkService.ViewModel
                 Canvas.SetLeft(solarLegendText, 20); Canvas.SetTop(solarLegendText, legendY);
                 TypeGraphCanvas.Children.Add(solarLegendText);
 
-                Rectangle windLegend = new Rectangle { Width = 12, Height = 12,
-                    Fill = new SolidColorBrush(Color.FromRgb(59, 130, 246)) };
+                Rectangle windLegend = new Rectangle
+                {
+                    Width = 12,
+                    Height = 12,
+                    Fill = new SolidColorBrush(Color.FromRgb(59, 130, 246))
+                };
                 Canvas.SetLeft(windLegend, 120); Canvas.SetTop(windLegend, legendY);
                 TypeGraphCanvas.Children.Add(windLegend);
 
@@ -439,12 +455,12 @@ namespace NetworkService.ViewModel
             var entries = new List<LogRow>();
             try
             {
-                string path = Path.GetFullPath(
-                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"../../Logs/Log.txt"));
+                string path = System.IO.Path.GetFullPath(
+                    System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"../../Logs/Log.txt"));
 
-                if (!File.Exists(path)) return entries;
+                if (!System.IO.File.Exists(path)) return entries;
 
-                foreach (var line in File.ReadAllLines(path).Skip(1))
+                foreach (var line in System.IO.File.ReadAllLines(path).Skip(1))
                 {
                     var parts = line.Split(',');
                     if (parts.Length < 3) continue;
