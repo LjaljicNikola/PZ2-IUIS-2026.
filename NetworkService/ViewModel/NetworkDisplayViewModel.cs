@@ -249,7 +249,7 @@ namespace NetworkService.ViewModel
 
         private void ClearCanvasVisuals(Canvas canvas)
         {
-            canvas.Background = Brushes.LightGray;
+            canvas.Background = new SolidColorBrush(Color.FromRgb(30, 45, 69));
             if (canvas.Children.OfType<TextBlock>().FirstOrDefault() is TextBlock tb)
                 tb.Text = string.Empty;
         }
@@ -345,8 +345,10 @@ namespace NetworkService.ViewModel
                 Stroke = Brushes.Orange,
                 StrokeThickness = 2,
                 StrokeDashArray = new DoubleCollection { 4, 2 },
-                X1 = fromCenter.X, Y1 = fromCenter.Y,
-                X2 = toCenter.X, Y2 = toCenter.Y,
+                X1 = fromCenter.X,
+                Y1 = fromCenter.Y,
+                X2 = toCenter.X,
+                Y2 = toCenter.Y,
                 Tag = connection
             };
 
@@ -516,7 +518,7 @@ namespace NetworkService.ViewModel
                         CanvasDerPairs.Remove(currentPair);
                     }
                     var restoredPair = new CanvasDerPair
-                        { CanvasId = entry.FromCanvasId, Resource = entry.DroppedResource };
+                    { CanvasId = entry.FromCanvasId, Resource = entry.DroppedResource };
                     CanvasDerPairs.Add(restoredPair);
                     if (_canvasDictionary.TryGetValue(entry.FromCanvasId, out var oldCvs))
                         UpdateCanvasUI(oldCvs, entry.DroppedResource);
@@ -526,7 +528,7 @@ namespace NetworkService.ViewModel
 
                 case UndoActionType.ClearCanvas:
                     var restored = new CanvasDerPair
-                        { CanvasId = entry.ToCanvasId, Resource = entry.DroppedResource };
+                    { CanvasId = entry.ToCanvasId, Resource = entry.DroppedResource };
                     CanvasDerPairs.Add(restored);
                     var group = AllResources.FirstOrDefault(g => g.TypeName == entry.DroppedResource.ResourceType.Name);
                     group?.Resources.Remove(entry.DroppedResource);

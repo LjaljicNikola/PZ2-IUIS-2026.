@@ -30,6 +30,21 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding"         Value="8,6"/>
             <Setter Property="FontSize"        Value="13"/>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ComboBoxItem">
+                        <Setter Property="Background" Value="#FF16213E"/>
+                        <Setter Property="Foreground" Value="#FFE2E8F0"/>
+                        <Setter Property="Padding"    Value="8,5"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter Property="Background" Value="#FF0F3460"/>
+                                <Setter Property="Foreground" Value="#FF22C55E"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style x:Key="SecondaryBtn" TargetType="Button">
