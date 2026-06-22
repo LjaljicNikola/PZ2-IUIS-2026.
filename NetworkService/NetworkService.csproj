@@ -82,17 +82,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-
     <!-- Infrastruktura -->
     <Compile Include="BindableBase.cs" />
+    <Compile Include="Model\Messages.cs" />
     <Compile Include="MyICommand.cs" />
     <Compile Include="DerResourcesByType.cs" />
-
     <!-- Helpers -->
     <Compile Include="Helpers\ToastNotification.cs" />
     <Compile Include="Helpers\ValidationBase.cs" />
     <Compile Include="Helpers\ValidationErrors.cs" />
-
     <!-- Model -->
     <Compile Include="Model\ActionRecord.cs" />
     <Compile Include="Model\CanvasDerPair.cs" />
@@ -100,13 +98,11 @@
     <Compile Include="Model\DerResource.cs" />
     <Compile Include="Model\DerResourceType.cs" />
     <Compile Include="Model\LogRow.cs" />
-
     <!-- ViewModel -->
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\MeasurementGraphViewModel.cs" />
     <Compile Include="ViewModel\NetworkDisplayViewModel.cs" />
     <Compile Include="ViewModel\NetworkEntitiesViewModel.cs" />
-
     <!-- Views code-behind -->
     <Compile Include="Views\MeasurementGraphView.xaml.cs">
       <DependentUpon>MeasurementGraphView.xaml</DependentUpon>
@@ -117,7 +113,6 @@
     <Compile Include="Views\NetworkEntitiesView.xaml.cs">
       <DependentUpon>NetworkEntitiesView.xaml</DependentUpon>
     </Compile>
-
     <!-- App i MainWindow -->
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -127,7 +122,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-
     <!-- Properties -->
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

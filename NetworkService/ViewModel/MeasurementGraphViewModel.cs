@@ -4,7 +4,6 @@ using Notification.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,7 +19,13 @@ namespace NetworkService.ViewModel
         public ObservableCollection<DerResource> AllResources
         {
             get => _allResources;
-            set { _allResources = value; OnPropertyChanged(nameof(AllResources)); }
+            set
+            {
+                _allResources = value;
+                OnPropertyChanged(nameof(AllResources));
+                // ✅ Kada se promeni lista, osveži i CG4 grafikon
+                DrawTypeDistributionGraph();
+            }
         }
 
         // ── Selektovani resurs ───────────────────────────────────────────────
@@ -53,7 +58,11 @@ namespace NetworkService.ViewModel
                 _graphCanvas = value;
                 OnPropertyChanged(nameof(GraphCanvas));
                 if (_graphCanvas != null)
+                {
                     _graphCanvas.SizeChanged += (s, e) => DrawBarGraph();
+                    // ✅ Kada se Canvas postavi, odmah nacrtaj bar grafikon
+                    DrawBarGraph();
+                }
             }
         }
 
@@ -67,7 +76,17 @@ namespace NetworkService.ViewModel
                 _typeGraphCanvas = value;
                 OnPropertyChanged(nameof(TypeGraphCanvas));
                 if (_typeGraphCanvas != null)
+                {
                     _typeGraphCanvas.SizeChanged += (s, e) => DrawTypeDistributionGraph();
+
+                    // ═══════════════════════════════════════════════════════════════
+                    // ✅ KLJUČNA PROMENA: Kada se Canvas postavi, odmah nacrtaj grafikon!
+                    // ═══════════════════════════════════════════════════════════════
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        DrawTypeDistributionGraph();
+                    }), System.Windows.Threading.DispatcherPriority.Loaded);
+                }
             }
         }
 
@@ -90,11 +109,24 @@ namespace NetworkService.ViewModel
             AllResources = new ObservableCollection<DerResource>();
 
             InitializeGraphCommand = new MyICommand<Canvas>(canvas => GraphCanvas = canvas);
-            InitializeTypeGraphCommand = new MyICommand<Canvas>(canvas => TypeGraphCanvas = canvas);
+
+            // ═══════════════════════════════════════════════════════════════════
+            // ✅ KLJUČNA PROMENA: InitializeTypeGraphCommand sada odmah crta grafikon
+            // ═══════════════════════════════════════════════════════════════════
+            InitializeTypeGraphCommand = new MyICommand<Canvas>(canvas =>
+            {
+                TypeGraphCanvas = canvas;
+                // Nakon što se Canvas postavi, odmah nacrtaj grafikon
+                DrawTypeDistributionGraph();
+            });
+
             UndoCommand = new MyICommand(OnUndo, CanUndo);
 
             Messenger.Default.Register<ObservableCollection<DerResource>>(this, OnResourcesReceived);
             Messenger.Default.Register<CanvasDerPair>(this, OnPairReceived);
+
+            // ✅ NOVI HANDLER: Kada se entiteti promene (dodavanje/brisanje)
+            Messenger.Default.Register<RefreshTypeGraphMessage>(this, OnRefreshTypeGraph);
         }
 
         // ── Messenger handleri ───────────────────────────────────────────────
@@ -102,7 +134,7 @@ namespace NetworkService.ViewModel
         private void OnResourcesReceived(ObservableCollection<DerResource> resources)
         {
             AllResources = resources;
-            DrawTypeDistributionGraph();
+            // DrawTypeDistributionGraph() se poziva iz settera AllResources
         }
 
         private void OnPairReceived(CanvasDerPair pair)
@@ -112,6 +144,12 @@ namespace NetworkService.ViewModel
                 DrawBarGraph();
 
             // CG4 type distribution se uvek osvežava
+            DrawTypeDistributionGraph();
+        }
+
+        // ✅ NOVI HANDLER: Osvežavanje grafikona na zahtev
+        private void OnRefreshTypeGraph(RefreshTypeGraphMessage message)
+        {
             DrawTypeDistributionGraph();
         }
 
@@ -285,12 +323,41 @@ namespace NetworkService.ViewModel
 
         private void DrawTypeDistributionGraph()
         {
-            if (TypeGraphCanvas == null || AllResources == null || AllResources.Count == 0)
+            // ═══ PROVERA: Ako canvas nije spreman, sačekaj ═══
+            if (TypeGraphCanvas == null || TypeGraphCanvas.ActualWidth <= 0 || TypeGraphCanvas.ActualHeight <= 0)
+            {
+                // Pokušaj ponovo za 100ms ako canvas još nije renderovan
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    if (TypeGraphCanvas != null && TypeGraphCanvas.ActualWidth > 0)
+                    {
+                        DrawTypeDistributionGraph();
+                    }
+                }), System.Windows.Threading.DispatcherPriority.Background);
                 return;
+            }
 
             Application.Current.Dispatcher.Invoke(() =>
             {
                 TypeGraphCanvas.Children.Clear();
+
+                // ═══ PROVERA: Da li postoje resursi ═══
+                if (AllResources == null || AllResources.Count == 0)
+                {
+                    // Prikaži poruku "No resources"
+                    TextBlock noDataText = new TextBlock
+                    {
+                        Text = "No resources in system",
+                        Foreground = new SolidColorBrush(Color.FromRgb(148, 163, 184)),
+                        FontSize = 14,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center
+                    };
+                    Canvas.SetLeft(noDataText, TypeGraphCanvas.ActualWidth / 2 - 70);
+                    Canvas.SetTop(noDataText, TypeGraphCanvas.ActualHeight / 2 - 10);
+                    TypeGraphCanvas.Children.Add(noDataText);
+                    return;
+                }
 
                 int totalCount = AllResources.Count;
                 if (totalCount == 0) return;

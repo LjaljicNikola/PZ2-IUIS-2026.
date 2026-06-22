@@ -23,6 +23,7 @@
             <GradientStop Color="#FF15803D" Offset="1"/>
         </LinearGradientBrush>
 
+        <!-- ═══ NOVI PRISTUP: ItemTemplate umesto ItemContainerStyle ═══ -->
         <Style x:Key="ComboStyle" TargetType="ComboBox">
             <Setter Property="Background"      Value="{StaticResource SecondaryBg}"/>
             <Setter Property="Foreground"      Value="{StaticResource TextPrimary}"/>
@@ -30,16 +31,42 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding"         Value="8,6"/>
             <Setter Property="FontSize"        Value="13"/>
+
+            <!-- ═══ OVO JE KLJUČNO: ItemTemplate daje potpunu kontrolu ═══ -->
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <!-- Svaka stavka je Border sa fiksnom pozadinom i belim tekstom -->
+                        <Border Background="#FF16213E" Padding="8,5">
+                            <TextBlock Text="{Binding Name}" 
+                                       Foreground="#FFFFFFFF" 
+                                       FontSize="13"/>
+                        </Border>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <!-- ═══ ONEMOGUĆAVAMO DEFAULT HOVER EFEKAT ═══ -->
             <Setter Property="ItemContainerStyle">
                 <Setter.Value>
                     <Style TargetType="ComboBoxItem">
-                        <Setter Property="Background" Value="#FF16213E"/>
-                        <Setter Property="Foreground" Value="#FFE2E8F0"/>
-                        <Setter Property="Padding"    Value="8,5"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="#FFFFFFFF"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                         <Style.Triggers>
+                            <!-- ✅ ONEMOGUĆAVAMO sve trigger-e -->
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter Property="Background" Value="#FF0F3460"/>
-                                <Setter Property="Foreground" Value="#FF22C55E"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="#FFFFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="#FFFFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="#FFFFFFFF"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -99,11 +126,16 @@
                     <StackPanel>
                         <TextBlock Text="Select DER Resource" FontSize="13" FontWeight="Bold"
                                    Foreground="{StaticResource AccentYellow}" Margin="0,0,0,8"/>
+
                         <ComboBox ItemsSource="{Binding AllResources}"
                                   SelectedItem="{Binding SelectedResource, Mode=TwoWay}"
                                   DisplayMemberPath="Name"
                                   Style="{StaticResource ComboStyle}"
                                   ToolTip="Choose the resource whose measurement history will be displayed"/>
+
+                        <TextBlock Text="{Binding SelectedResource.Name, StringFormat='Selected: {0}', FallbackValue='No resource selected'}"
+                                   Foreground="{StaticResource TextMuted}"
+                                   FontSize="11" Margin="0,5,0,0"/>
                     </StackPanel>
                 </Border>
 

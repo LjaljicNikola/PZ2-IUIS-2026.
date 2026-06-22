@@ -213,6 +213,13 @@ namespace NetworkService.ViewModel
             RecordAction($"Added DER resource \"{newResource.Name}\" (ID {newResource.Id})");
 
             Messenger.Default.Send(Resources);
+
+            // ✅ Slanje poruke za osvežavanje CG4 grafikona
+            Messenger.Default.Send(new RefreshTypeGraphMessage());
+
+            // ✅ Slanje poruke o novom resursu
+            Messenger.Default.Send(newResource);
+
             ResetForm();
             RestartSimulator();
 
@@ -233,6 +240,7 @@ namespace NetworkService.ViewModel
             if (result == MessageBoxResult.No) return;
 
             var deleted = SelectedResource;
+            int deletedId = deleted.Id;
             _undoStack.Push(new UndoEntry { ActionType = UndoActionType.Delete, Resource = deleted });
             UndoCommand.RaiseCanExecuteChanged();
             UndoAllCommand.RaiseCanExecuteChanged();
@@ -241,6 +249,13 @@ namespace NetworkService.ViewModel
             RecordAction($"Deleted DER resource \"{deleted.Name}\" (ID {deleted.Id})");
 
             Messenger.Default.Send(Resources);
+
+            // ✅ Slanje poruke za osvežavanje CG4 grafikona
+            Messenger.Default.Send(new RefreshTypeGraphMessage());
+
+            // ✅ Slanje poruke o obrisanom resursu
+            Messenger.Default.Send(deletedId);
+
             RestartSimulator();
 
             _notificationManager.Show("Success",
@@ -278,6 +293,10 @@ namespace NetworkService.ViewModel
             UndoAllCommand.RaiseCanExecuteChanged();
 
             Messenger.Default.Send(Resources);
+
+            // ✅ Slanje poruke za osvežavanje CG4 grafikona
+            Messenger.Default.Send(new RefreshTypeGraphMessage());
+
             RestartSimulator();
 
             _notificationManager.Show("Undo All",
@@ -295,6 +314,10 @@ namespace NetworkService.ViewModel
                     Resources.Remove(entry.Resource);
                     RecordAction($"[Undo] Removed \"{entry.Resource.Name}\" (ID {entry.Resource.Id})");
                     Messenger.Default.Send(Resources);
+
+                    // ✅ Slanje poruke za osvežavanje CG4 grafikona
+                    Messenger.Default.Send(new RefreshTypeGraphMessage());
+
                     RestartSimulator();
                     break;
 
@@ -302,6 +325,10 @@ namespace NetworkService.ViewModel
                     Resources.Add(entry.Resource);
                     RecordAction($"[Undo] Restored \"{entry.Resource.Name}\" (ID {entry.Resource.Id})");
                     Messenger.Default.Send(Resources);
+
+                    // ✅ Slanje poruke za osvežavanje CG4 grafikona
+                    Messenger.Default.Send(new RefreshTypeGraphMessage());
+
                     RestartSimulator();
                     break;
             }

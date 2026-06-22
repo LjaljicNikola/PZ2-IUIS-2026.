@@ -53,6 +53,7 @@
             </Style.Triggers>
         </Style>
 
+        <!-- ═══ ISPRAVLJENI COMBOBOX STIL - BELI TEKST NA TAMNO PLAVOJ ═══ -->
         <Style x:Key="ComboStyle" TargetType="ComboBox">
             <Setter Property="Background"   Value="{StaticResource SecondaryBg}"/>
             <Setter Property="Foreground"   Value="{StaticResource TextPrimary}"/>
@@ -60,16 +61,40 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding"      Value="8,6"/>
             <Setter Property="FontSize"     Value="13"/>
+
+            <!-- ═══ ItemTemplate za potpunu kontrolu nad izgledom stavki ═══ -->
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <Border Background="#FF16213E" Padding="8,5">
+                            <TextBlock Text="{Binding}" 
+                                       Foreground="#FFFFFFFF" 
+                                       FontSize="13"/>
+                        </Border>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <!-- ═══ ONEMOGUĆAVANJE DEFAULT HOVER EFEKTA ═══ -->
             <Setter Property="ItemContainerStyle">
                 <Setter.Value>
                     <Style TargetType="ComboBoxItem">
-                        <Setter Property="Background" Value="#FF16213E"/>
-                        <Setter Property="Foreground" Value="#FF64748B "/>
-                        <Setter Property="Padding"    Value="8,5"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="#FFFFFFFF"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                         <Style.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter Property="Background" Value="#FF0F3460"/>
-                                <Setter Property="Foreground" Value="Black"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="#FFFFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="#FFFFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="#FFFFFFFF"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -222,12 +247,11 @@
                             <ComboBox ItemsSource="{Binding ResourceTypes}"
                                       SelectedItem="{Binding CurrentResource.TypeName}"
                                       Style="{StaticResource ComboStyle}" Margin="0,0,0,12"
-                                      Foreground="#FF0F172A"
-                                      ToolTip="Select Solar Panel or Windgenerator"/>       
+                                      ToolTip="Select Solar Panel or Windgenerator"/>
 
                             <Button Content="➕ Add Resource" Command="{Binding AddCommand}"
                                     Style="{StaticResource PrimaryBtn}" HorizontalAlignment="Stretch"
-                                    ToolTip="Add this DER resource to the monitoring system (Ctrl+A to expand/collapse)"/>
+                                    ToolTip="Add this DER resource to the monitoring system"/>
                         </StackPanel>
                     </Border>
 
@@ -403,4 +427,3 @@
         </Border>
     </Grid>
 </UserControl>
-    
