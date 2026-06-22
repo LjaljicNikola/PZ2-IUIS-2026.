@@ -64,12 +64,12 @@
                 <Setter.Value>
                     <Style TargetType="ComboBoxItem">
                         <Setter Property="Background" Value="#FF16213E"/>
-                        <Setter Property="Foreground" Value="#FFE2E8F0"/>
+                        <Setter Property="Foreground" Value="#FF64748B "/>
                         <Setter Property="Padding"    Value="8,5"/>
                         <Style.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
                                 <Setter Property="Background" Value="#FF0F3460"/>
-                                <Setter Property="Foreground" Value="#FF22C55E"/>
+                                <Setter Property="Foreground" Value="Black"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -222,7 +222,8 @@
                             <ComboBox ItemsSource="{Binding ResourceTypes}"
                                       SelectedItem="{Binding CurrentResource.TypeName}"
                                       Style="{StaticResource ComboStyle}" Margin="0,0,0,12"
-                                      ToolTip="Select Solar Panel or Windgenerator"/>
+                                      Foreground="#FF0F172A"
+                                      ToolTip="Select Solar Panel or Windgenerator"/>       
 
                             <Button Content="➕ Add Resource" Command="{Binding AddCommand}"
                                     Style="{StaticResource PrimaryBtn}" HorizontalAlignment="Stretch"

@@ -65,6 +65,7 @@ namespace NetworkService.Model
                 {
                     _currentValue = value;
                     OnPropertyChanged(nameof(CurrentValue));
+                    OnPropertyChanged(nameof(IsValueValid));
                     // Notify NetworkDisplayViewModel and MeasurementGraphViewModel
                     Messenger.Default.Send(this);
                 }
