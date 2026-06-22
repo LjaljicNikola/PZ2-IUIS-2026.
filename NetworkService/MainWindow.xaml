@@ -13,21 +13,28 @@
         MinHeight="600" MinWidth="900"
         WindowStyle="SingleBorderWindow"
         ResizeMode="CanResize"
-        Background="#FF1A1A2E">
+        Background="#FF1A1A2E"
+        PreviewKeyDown="Window_PreviewKeyDown"
+        Focusable="True">
 
     <!-- CG4: Keyboard shortcuts za navigaciju između prikaza -->
     <Window.InputBindings>
         <KeyBinding Key="D1" Modifiers="Control"
-                    Command="{Binding NavCommand}" CommandParameter="NetworkEntities"
-                    />
+                    Command="{Binding NavCommand}" CommandParameter="NetworkEntities"/>
         <KeyBinding Key="D2" Modifiers="Control"
-                    Command="{Binding NavCommand}" CommandParameter="NetworkDisplay"
-                    />
+                    Command="{Binding NavCommand}" CommandParameter="NetworkDisplay"/>
         <KeyBinding Key="D3" Modifiers="Control"
-                    Command="{Binding NavCommand}" CommandParameter="MeasurementGraph"
-                    />
+                    Command="{Binding NavCommand}" CommandParameter="MeasurementGraph"/>
         <KeyBinding Key="F4" Modifiers="Alt"
                     Command="{Binding ExitCommand}"/>
+
+        <!-- ✅ UNDO/REDO/UNDO ALL PREČICE -->
+        <KeyBinding Key="Z" Modifiers="Control"
+                    Command="{Binding UndoCommand}"/>
+        <KeyBinding Key="Z" Modifiers="Control+Shift"
+                    Command="{Binding RedoCommand}"/>
+        <KeyBinding Key="U" Modifiers="Control+Shift"
+                    Command="{Binding UndoAllCommand}"/>
     </Window.InputBindings>
 
     <Window.DataContext>
@@ -218,7 +225,7 @@
             <Border Grid.Row="2" Background="#FF0F3460">
                 <DockPanel LastChildFill="False" Margin="10,0">
                     <TextBlock DockPanel.Dock="Left"
-                               Text="⚡ DER Network Monitor  |  Valid range: 1 – 5 MW  |  Ctrl+1/2/3 to navigate"
+                               Text="⚡ DER Network Monitor  |  Valid range: 1 – 5 MW  |  Ctrl+1/2/3 to navigate  |  Ctrl+Z Undo  |  Ctrl+Shift+Z Redo  |  Ctrl+Shift+U Undo All"
                                Foreground="#FF94A3B8" FontSize="11" VerticalAlignment="Center"/>
                     <TextBlock DockPanel.Dock="Right"
                                Text="CG4 – T4 – G2 – P1"

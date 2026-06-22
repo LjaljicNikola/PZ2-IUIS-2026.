@@ -16,6 +16,7 @@ namespace NetworkService.ViewModel
     {
         // ── Lista svih resursa (za ComboBox) ─────────────────────────────────
         private ObservableCollection<DerResource> _allResources;
+
         public ObservableCollection<DerResource> AllResources
         {
             get => _allResources;
@@ -541,6 +542,16 @@ namespace NetworkService.ViewModel
             }
             catch { /* Ako log ne postoji, vrati praznu listu */ }
             return entries;
+        }
+
+        public void ExecuteUndo()
+        {
+            OnUndo();
+        }
+
+        public bool CanExecuteUndo()
+        {
+            return _undoStack.Count > 0 && _undoStack.Peek() != null;
         }
     }
 }

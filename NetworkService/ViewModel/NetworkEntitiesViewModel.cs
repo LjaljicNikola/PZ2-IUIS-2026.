@@ -147,6 +147,9 @@ namespace NetworkService.ViewModel
         // ── CG4 Undo stack (jedan po jedan) ─────────────────────────────────
         private readonly Stack<UndoEntry> _undoStack = new Stack<UndoEntry>();
 
+        private readonly Stack<UndoEntry> _redoStack = new Stack<UndoEntry>();
+
+
         private enum UndoActionType { Add, Delete }
         private class UndoEntry
         {
@@ -174,6 +177,7 @@ namespace NetworkService.ViewModel
             AddCommand = new MyICommand(OnAdd);
             DeleteCommand = new MyICommand(OnDelete, CanDelete);
             UndoCommand = new MyICommand(OnUndo, CanUndo);
+            RedoCommand = new MyICommand(OnRedo, CanRedo);
             UndoAllCommand = new MyICommand(OnUndoAll, CanUndo);
             ClearFilterCommand = new MyICommand(OnClearFilter);
 
@@ -207,6 +211,7 @@ namespace NetworkService.ViewModel
             Resources.Add(newResource);
 
             _undoStack.Push(new UndoEntry { ActionType = UndoActionType.Add, Resource = newResource });
+            _redoStack.Clear();
             UndoCommand.RaiseCanExecuteChanged();
             UndoAllCommand.RaiseCanExecuteChanged();
 
@@ -214,10 +219,10 @@ namespace NetworkService.ViewModel
 
             Messenger.Default.Send(Resources);
 
-            // ✅ Slanje poruke za osvežavanje CG4 grafikona
+            //  Slanje poruke za osvežavanje CG4 grafikona
             Messenger.Default.Send(new RefreshTypeGraphMessage());
 
-            // ✅ Slanje poruke o novom resursu
+            //  Slanje poruke o novom resursu
             Messenger.Default.Send(newResource);
 
             ResetForm();
@@ -242,6 +247,7 @@ namespace NetworkService.ViewModel
             var deleted = SelectedResource;
             int deletedId = deleted.Id;
             _undoStack.Push(new UndoEntry { ActionType = UndoActionType.Delete, Resource = deleted });
+            _redoStack.Clear();
             UndoCommand.RaiseCanExecuteChanged();
             UndoAllCommand.RaiseCanExecuteChanged();
 
@@ -250,10 +256,10 @@ namespace NetworkService.ViewModel
 
             Messenger.Default.Send(Resources);
 
-            // ✅ Slanje poruke za osvežavanje CG4 grafikona
+            //  Slanje poruke za osvežavanje CG4 grafikona
             Messenger.Default.Send(new RefreshTypeGraphMessage());
 
-            // ✅ Slanje poruke o obrisanom resursu
+            //  Slanje poruke o obrisanom resursu
             Messenger.Default.Send(deletedId);
 
             RestartSimulator();
@@ -271,10 +277,12 @@ namespace NetworkService.ViewModel
             if (_undoStack.Count == 0) return;
 
             var entry = _undoStack.Pop();
+            _redoStack.Push(entry);
             PerformUndo(entry);
 
             UndoCommand.RaiseCanExecuteChanged();
             UndoAllCommand.RaiseCanExecuteChanged();
+            RedoCommand?.RaiseCanExecuteChanged();
 
             _notificationManager.Show("Undo",
                 "Last action undone successfully.",
@@ -294,7 +302,7 @@ namespace NetworkService.ViewModel
 
             Messenger.Default.Send(Resources);
 
-            // ✅ Slanje poruke za osvežavanje CG4 grafikona
+            //  Slanje poruke za osvežavanje CG4 grafikona
             Messenger.Default.Send(new RefreshTypeGraphMessage());
 
             RestartSimulator();
@@ -315,7 +323,7 @@ namespace NetworkService.ViewModel
                     RecordAction($"[Undo] Removed \"{entry.Resource.Name}\" (ID {entry.Resource.Id})");
                     Messenger.Default.Send(Resources);
 
-                    // ✅ Slanje poruke za osvežavanje CG4 grafikona
+                    //  Slanje poruke za osvežavanje CG4 grafikona
                     Messenger.Default.Send(new RefreshTypeGraphMessage());
 
                     RestartSimulator();
@@ -326,7 +334,7 @@ namespace NetworkService.ViewModel
                     RecordAction($"[Undo] Restored \"{entry.Resource.Name}\" (ID {entry.Resource.Id})");
                     Messenger.Default.Send(Resources);
 
-                    // ✅ Slanje poruke za osvežavanje CG4 grafikona
+                    //  Slanje poruke za osvežavanje CG4 grafikona
                     Messenger.Default.Send(new RefreshTypeGraphMessage());
 
                     RestartSimulator();
@@ -374,7 +382,6 @@ namespace NetworkService.ViewModel
             return true;
         }
 
-        // ── Pomoćne metode ───────────────────────────────────────────────────
         private void ResetForm()
         {
             CurrentResource = new DerResource(string.Empty, new DerResourceType(DerTypeName.SolarPanel));
@@ -402,6 +409,73 @@ namespace NetworkService.ViewModel
             {
                 Console.WriteLine("Failed to restart simulator: " + ex.Message);
             }
+        }
+        private void PerformRedo(UndoEntry entry)
+        {
+            switch (entry.ActionType)
+            {
+                case UndoActionType.Add:
+                    Resources.Add(entry.Resource);
+                    RecordAction($"[Redo] Restored \"{entry.Resource.Name}\" (ID {entry.Resource.Id})");
+                    Messenger.Default.Send(Resources);
+                    Messenger.Default.Send(new RefreshTypeGraphMessage());
+                    RestartSimulator();
+                    break;
+
+                case UndoActionType.Delete:
+                    Resources.Remove(entry.Resource);
+                    RecordAction($"[Redo] Removed \"{entry.Resource.Name}\" (ID {entry.Resource.Id})");
+                    Messenger.Default.Send(Resources);
+                    Messenger.Default.Send(new RefreshTypeGraphMessage());
+                    RestartSimulator();
+                    break;
+            }
+        }
+
+        private void OnRedo()
+        {
+            if (_redoStack.Count == 0) return;
+
+            var entry = _redoStack.Pop();
+            _undoStack.Push(entry); //  Vraćamo u Undo stack
+
+            PerformRedo(entry);
+
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
+            UndoAllCommand.RaiseCanExecuteChanged();
+
+            _notificationManager.Show("Redo",
+                "Action redone successfully.",
+                NotificationType.Information, "WindowNotificationArea");
+        }
+
+        private bool CanRedo() => _redoStack.Count > 0;
+
+        public void ExecuteUndo()
+        {
+            OnUndo();
+        }
+        public MyICommand RedoCommand { get; private set; }
+
+        public bool CanExecuteUndo()
+        {
+            return _undoStack.Count > 0;
+        }
+
+        public void ExecuteUndoAll()
+        {
+            OnUndoAll();
+        }
+
+        public bool CanExecuteUndoAll()
+        {
+            return _undoStack.Count > 0;
+        }
+
+        public void ExecuteRedo()
+        {
+            OnRedo();
         }
     }
 }
