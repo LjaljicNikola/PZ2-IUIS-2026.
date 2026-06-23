@@ -31,9 +31,7 @@ namespace NetworkService.ViewModel
         public MyICommand<string> NavCommand { get; private set; }
         public MyICommand ExitCommand { get; private set; }
 
-        // ════════════════════════════════════════════════════════════════
-        // ✅ UNDO/REDO/UNDO ALL KOMANDE
-        // ════════════════════════════════════════════════════════════════
+        //  UNDO/REDO/UNDO ALL KOMANDE
         public MyICommand UndoCommand { get; private set; }
         public MyICommand RedoCommand { get; private set; }
         public MyICommand UndoAllCommand { get; private set; }
@@ -47,9 +45,7 @@ namespace NetworkService.ViewModel
             NavCommand = new MyICommand<string>(OnNav);
             ExitCommand = new MyICommand(ExecuteExit);
 
-            // ════════════════════════════════════════════════════════════
-            // ✅ INICIJALIZACIJA UNDO/REDO/UNDO ALL KOMANDI
-            // ════════════════════════════════════════════════════════════
+            //  INICIJALIZACIJA UNDO/REDO/UNDO ALL KOMANDI
             UndoCommand = new MyICommand(OnUndo, CanUndo);
             RedoCommand = new MyICommand(OnRedo, CanRedo);
             UndoAllCommand = new MyICommand(OnUndoAll, CanUndoAll);
@@ -93,9 +89,7 @@ namespace NetworkService.ViewModel
             }
         }
 
-        // ════════════════════════════════════════════════════════════════
-        // ✅ IMPLEMENTACIJA UNDO/REDO/UNDO ALL - STVARNO POZIVA METODE
-        // ════════════════════════════════════════════════════════════════
+        //  IMPLEMENTACIJA UNDO/REDO/UNDO ALL - STVARNO POZIVA METODE
 
         private void OnUndo()
         {
@@ -194,9 +188,7 @@ namespace NetworkService.ViewModel
             return false;
         }
 
-        // ════════════════════════════════════════════════════════════════
-        // ✅ OSVEŽAVANJE KOMANDI
-        // ════════════════════════════════════════════════════════════════
+        //  OSVEŽAVANJE KOMANDI
 
         public void RaiseCanExecuteChanged()
         {

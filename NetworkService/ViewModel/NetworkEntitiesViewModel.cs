@@ -16,13 +16,13 @@ namespace NetworkService.ViewModel
 {
     public class NetworkEntitiesViewModel : BindableBase
     {
-        // ── Kolekcija resursa ────────────────────────────────────────────────
+        // x Kolekcija resursa x
         public ObservableCollection<DerResource> Resources { get; set; }
 
-        // ── Filtrirani pogled za DataGrid ────────────────────────────────────
+        // x Filtrirani pogled za DataGrid 
         public ICollectionView FilteredView { get; private set; }
 
-        // ── Selektovani red u tabeli ─────────────────────────────────────────
+        //  Selektovani red u tabeli 
         private DerResource _selectedResource;
         public DerResource SelectedResource
         {
@@ -38,7 +38,7 @@ namespace NetworkService.ViewModel
             }
         }
 
-        // ── P1 pretraga: naziv ili tip ───────────────────────────────────────
+        //  P1 pretraga: naziv ili tip 
         private bool _isNameFilterSelected = true;
         public bool IsNameFilterSelected
         {
@@ -86,7 +86,7 @@ namespace NetworkService.ViewModel
             }
         }
 
-        // ── CG4 dodatni filter: van/unutar opsega ───────────────────────────
+        //  CG4 dodatni filter: van/unutar opsega 
         private bool _showOnlyOutOfRange = false;
         public bool ShowOnlyOutOfRange
         {
@@ -130,7 +130,7 @@ namespace NetworkService.ViewModel
             }
         }
 
-        // ── Form za dodavanje ────────────────────────────────────────────────
+        //  Form za dodavanje 
         private DerResource _currentResource;
         public DerResource CurrentResource
         {
@@ -141,10 +141,10 @@ namespace NetworkService.ViewModel
         public IEnumerable<DerTypeName> ResourceTypes =>
             Enum.GetValues(typeof(DerTypeName)).Cast<DerTypeName>();
 
-        // ── CG4 History paleta ───────────────────────────────────────────────
+        //  CG4 History paleta 
         public ObservableCollection<ActionRecord> ActionHistory { get; private set; }
 
-        // ── CG4 Undo stack (jedan po jedan) ─────────────────────────────────
+        //  CG4 Undo stack (jedan po jedan) 
         private readonly Stack<UndoEntry> _undoStack = new Stack<UndoEntry>();
 
         private readonly Stack<UndoEntry> _redoStack = new Stack<UndoEntry>();
@@ -157,7 +157,7 @@ namespace NetworkService.ViewModel
             public DerResource Resource { get; set; }
         }
 
-        // ── Komande ──────────────────────────────────────────────────────────
+        //  Komande 
         public MyICommand AddCommand { get; private set; }
         public MyICommand DeleteCommand { get; private set; }
         public MyICommand UndoCommand { get; private set; }
@@ -181,10 +181,10 @@ namespace NetworkService.ViewModel
             UndoAllCommand = new MyICommand(OnUndoAll, CanUndo);
             ClearFilterCommand = new MyICommand(OnClearFilter);
 
-            CurrentResource = new DerResource(string.Empty, new DerResourceType(DerTypeName.SolarPanel));
+            CurrentResource = new DerResource(string.Empty, new DerResourceType(DerTypeName.SolarPanel), true);
         }
 
-        // ── Punjenje početnih podataka ───────────────────────────────────────
+        //  Punjenje početnih podataka 
         public void LoadResources()
         {
             Resources = new ObservableCollection<DerResource>
@@ -195,7 +195,7 @@ namespace NetworkService.ViewModel
             };
         }
 
-        // ── Dodavanje ────────────────────────────────────────────────────────
+        //  Dodavanje 
         private void OnAdd()
         {
             CurrentResource.Validate();
@@ -233,7 +233,7 @@ namespace NetworkService.ViewModel
                 NotificationType.Success, "WindowNotificationArea");
         }
 
-        // ── Brisanje ─────────────────────────────────────────────────────────
+        //  Brisanje 
         private void OnDelete()
         {
             var result = MessageBox.Show(
@@ -271,7 +271,7 @@ namespace NetworkService.ViewModel
 
         private bool CanDelete() => SelectedResource != null;
 
-        // ── CG4 Undo (poslednja akcija) ──────────────────────────────────────
+        //  CG4 Undo (poslednja akcija) 
         private void OnUndo()
         {
             if (_undoStack.Count == 0) return;
@@ -289,7 +289,7 @@ namespace NetworkService.ViewModel
                 NotificationType.Information, "WindowNotificationArea");
         }
 
-        // ── CG4 Undo All (sve akcije odjednom) ───────────────────────────────
+        //  CG4 Undo All (sve akcije odjednom) 
         private void OnUndoAll()
         {
             if (_undoStack.Count == 0) return;
@@ -342,7 +342,7 @@ namespace NetworkService.ViewModel
             }
         }
 
-        // ── Poništavanje filtera ─────────────────────────────────────────────
+        //  Poništavanje filtera 
         private void OnClearFilter()
         {
             FilterText = string.Empty;
@@ -351,7 +351,7 @@ namespace NetworkService.ViewModel
             IsNameFilterSelected = true;
         }
 
-        // ── P1 + CG4 filter logika ───────────────────────────────────────────
+        //  P1 + CG4 filter logika 
         private bool ApplyFilter(object obj)
         {
             if (!(obj is DerResource resource)) return false;
@@ -384,7 +384,7 @@ namespace NetworkService.ViewModel
 
         private void ResetForm()
         {
-            CurrentResource = new DerResource(string.Empty, new DerResourceType(DerTypeName.SolarPanel));
+            CurrentResource = new DerResource(string.Empty, new DerResourceType(DerTypeName.SolarPanel), true);
         }
 
         private void RecordAction(string description)

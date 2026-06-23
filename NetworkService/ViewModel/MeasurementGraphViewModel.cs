@@ -14,7 +14,7 @@ namespace NetworkService.ViewModel
 {
     public class MeasurementGraphViewModel : BindableBase
     {
-        // ── Lista svih resursa (za ComboBox) ─────────────────────────────────
+        //  Lista svih resursa (za ComboBox) 
         private ObservableCollection<DerResource> _allResources;
 
         public ObservableCollection<DerResource> AllResources
@@ -24,12 +24,12 @@ namespace NetworkService.ViewModel
             {
                 _allResources = value;
                 OnPropertyChanged(nameof(AllResources));
-                // ✅ Kada se promeni lista, osveži i CG4 grafikon
+                //  Kada se promeni lista, osveži i CG4 grafikon
                 DrawTypeDistributionGraph();
             }
         }
 
-        // ── Selektovani resurs ───────────────────────────────────────────────
+        //  Selektovani resurs 
         private DerResource _selectedResource;
         public DerResource SelectedResource
         {
@@ -49,7 +49,7 @@ namespace NetworkService.ViewModel
             }
         }
 
-        // ── Canvas za G2 grafikon ─────────────────────────────────────────────
+        //  Canvas za G2 grafikon 
         private Canvas _graphCanvas;
         public Canvas GraphCanvas
         {
@@ -61,13 +61,13 @@ namespace NetworkService.ViewModel
                 if (_graphCanvas != null)
                 {
                     _graphCanvas.SizeChanged += (s, e) => DrawBarGraph();
-                    // ✅ Kada se Canvas postavi, odmah nacrtaj bar grafikon
+                    //  Kada se Canvas postavi, odmah nacrtaj bar grafikon
                     DrawBarGraph();
                 }
             }
         }
 
-        // ── Canvas za CG4 stacked bar grafikon po tipovima ────────────────────
+        //  Canvas za CG4 stacked bar grafikon po tipovima 
         private Canvas _typeGraphCanvas;
         public Canvas TypeGraphCanvas
         {
@@ -80,9 +80,7 @@ namespace NetworkService.ViewModel
                 {
                     _typeGraphCanvas.SizeChanged += (s, e) => DrawTypeDistributionGraph();
 
-                    // ═══════════════════════════════════════════════════════════════
-                    // ✅ KLJUČNA PROMENA: Kada se Canvas postavi, odmah nacrtaj grafikon!
-                    // ═══════════════════════════════════════════════════════════════
+                    //  KLJUČNA PROMENA: Kada se Canvas postavi, odmah nacrtaj grafikon!
                     Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                     {
                         DrawTypeDistributionGraph();
@@ -91,10 +89,10 @@ namespace NetworkService.ViewModel
             }
         }
 
-        // ── CG4 Undo stack (prethodni selektovani resurs) ────────────────────
+        //  CG4 Undo stack (prethodni selektovani resurs) 
         private readonly Stack<DerResource> _undoStack = new Stack<DerResource>();
 
-        // ── Komande ──────────────────────────────────────────────────────────
+        //  Komande 
         public MyICommand<Canvas> InitializeGraphCommand { get; private set; }
         public MyICommand<Canvas> InitializeTypeGraphCommand { get; private set; }
         public MyICommand UndoCommand { get; private set; }
@@ -111,9 +109,7 @@ namespace NetworkService.ViewModel
 
             InitializeGraphCommand = new MyICommand<Canvas>(canvas => GraphCanvas = canvas);
 
-            // ═══════════════════════════════════════════════════════════════════
-            // ✅ KLJUČNA PROMENA: InitializeTypeGraphCommand sada odmah crta grafikon
-            // ═══════════════════════════════════════════════════════════════════
+            //  KLJUČNA PROMENA: InitializeTypeGraphCommand sada odmah crta grafikon
             InitializeTypeGraphCommand = new MyICommand<Canvas>(canvas =>
             {
                 TypeGraphCanvas = canvas;
@@ -126,11 +122,11 @@ namespace NetworkService.ViewModel
             Messenger.Default.Register<ObservableCollection<DerResource>>(this, OnResourcesReceived);
             Messenger.Default.Register<CanvasDerPair>(this, OnPairReceived);
 
-            // ✅ NOVI HANDLER: Kada se entiteti promene (dodavanje/brisanje)
+            //  NOVI HANDLER: Kada se entiteti promene (dodavanje/brisanje)
             Messenger.Default.Register<RefreshTypeGraphMessage>(this, OnRefreshTypeGraph);
         }
 
-        // ── Messenger handleri ───────────────────────────────────────────────
+        //  Messenger handleri 
 
         private void OnResourcesReceived(ObservableCollection<DerResource> resources)
         {
@@ -148,13 +144,13 @@ namespace NetworkService.ViewModel
             DrawTypeDistributionGraph();
         }
 
-        // ✅ NOVI HANDLER: Osvežavanje grafikona na zahtev
+        //  NOVI HANDLER: Osvežavanje grafikona na zahtev
         private void OnRefreshTypeGraph(RefreshTypeGraphMessage message)
         {
             DrawTypeDistributionGraph();
         }
 
-        // ── G2: Bar grafikon (poslednjih 5 vrednosti za selektovani resurs) ──
+        //  G2: Bar grafikon (poslednjih 5 vrednosti za selektovani resurs) ──
 
         private void DrawBarGraph()
         {
@@ -320,11 +316,11 @@ namespace NetworkService.ViewModel
             }
         }
 
-        // ── CG4: Stacked bar grafikon zastupljenosti tipova ──────────────────
+        //  CG4: Stacked bar grafikon zastupljenosti tipova 
 
         private void DrawTypeDistributionGraph()
         {
-            // ═══ PROVERA: Ako canvas nije spreman, sačekaj ═══
+            //  PROVERA: Ako canvas nije spreman, sačekaj 
             if (TypeGraphCanvas == null || TypeGraphCanvas.ActualWidth <= 0 || TypeGraphCanvas.ActualHeight <= 0)
             {
                 // Pokušaj ponovo za 100ms ako canvas još nije renderovan
@@ -342,7 +338,7 @@ namespace NetworkService.ViewModel
             {
                 TypeGraphCanvas.Children.Clear();
 
-                // ═══ PROVERA: Da li postoje resursi ═══
+                //  PROVERA: Da li postoje resursi 
                 if (AllResources == null || AllResources.Count == 0)
                 {
                     // Prikaži poruku "No resources"
@@ -495,7 +491,7 @@ namespace NetworkService.ViewModel
             });
         }
 
-        // ── CG4 Undo ─────────────────────────────────────────────────────────
+        //  CG4 Undo 
 
         private bool CanUndo() => _undoStack.Count > 0 && _undoStack.Peek() != null;
 
@@ -516,7 +512,7 @@ namespace NetworkService.ViewModel
             }
         }
 
-        // ── Čitanje log fajla ─────────────────────────────────────────────────
+        //  Čitanje log fajla 
 
         private List<LogRow> ReadLog()
         {

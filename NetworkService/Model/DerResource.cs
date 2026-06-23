@@ -25,6 +25,14 @@ namespace NetworkService.Model
             _currentValue = 0;
         }
 
+        internal DerResource(string name, DerResourceType resourceType, bool formOnly)
+        {
+            _id = 0;
+            _name = name;
+            _resourceType = resourceType;
+            _currentValue = 0;
+        }
+
         public int Id
         {
             get => _id;

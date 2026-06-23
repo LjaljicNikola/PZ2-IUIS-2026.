@@ -16,7 +16,7 @@ namespace NetworkService.ViewModel
 {
     public class NetworkDisplayViewModel : BindableBase
     {
-        // ── Kolekcija za TreeView (grupisano po tipu) ────────────────────────
+        //  Kolekcija za TreeView (grupisano po tipu) 
         private ObservableCollection<DerResourcesByType> _allResources;
         public ObservableCollection<DerResourcesByType> AllResources
         {
@@ -24,7 +24,7 @@ namespace NetworkService.ViewModel
             set { _allResources = value; OnPropertyChanged(nameof(AllResources)); }
         }
 
-        // ── Selektovani resurs za drag ───────────────────────────────────────
+        //  Selektovani resurs za drag 
         private DerResource _selectedResource;
         public DerResource SelectedResource
         {
@@ -32,22 +32,22 @@ namespace NetworkService.ViewModel
             set { _selectedResource = value; OnPropertyChanged(nameof(SelectedResource)); }
         }
 
-        // ── Canvas ↔ Resource parovi ─────────────────────────────────────────
+        //  Canvas ↔ Resource parovi 
         public static ObservableCollection<CanvasDerPair> CanvasDerPairs { get; private set; }
 
-        // ── Linije veza između canvas-ova ────────────────────────────────────
+        //  Linije veza između canvas-ova 
         public ObservableCollection<DerConnection> Connections { get; private set; }
         public ObservableCollection<Line> Lines { get; private set; }
         private Canvas _lineCanvas;
 
-        // ── Rečnik canvas objekata (ID → Canvas) ────────────────────────────
+        //  Rečnik canvas objekata (ID → Canvas) 
         private readonly Dictionary<int, Canvas> _canvasDictionary = new Dictionary<int, Canvas>();
 
-        // ── Drag state ───────────────────────────────────────────────────────
+        //  Drag state 
         private bool _isDragging;
         private Point _dragStartPoint;
 
-        // ── CG4 Undo stack ────────────────────────────────────────────────────
+        //   Undo stack 
         private readonly Stack<UndoEntry> _undoStack = new Stack<UndoEntry>();
         private enum UndoActionType { DropFromTree, DropFromCanvas, Connect, ClearCanvas }
 
@@ -65,10 +65,10 @@ namespace NetworkService.ViewModel
             public List<DerConnection> SavedConnections { get; set; }
         }
 
-        // ── CG4 History paleta ────────────────────────────────────────────────
+        //  CG4 History paleta x
         public ObservableCollection<ActionRecord> ActionHistory { get; private set; }
 
-        // ── Komande ──────────────────────────────────────────────────────────
+        //  Komande 
         public MyICommand<object> MouseDownCommand { get; private set; }
         public MyICommand<object> MouseMoveCommand { get; private set; }
         public MyICommand<object> ResetDragCommand { get; private set; }
